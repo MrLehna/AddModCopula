@@ -1,0 +1,19 @@
+Package: AddModCopula
+Type: Package
+Title: Optimization of bi-distributional copula through additive model
+Version: 0.1.0
+Depends: R (>= 2.10)
+Author: Malte Lehna
+Maintainer: Malte Lehna <malte.lehna@live.de>
+Description: The aim of the package is to describe and optimize the parameters of 
+    a copula through an additive model. 
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+Imports: circular,distr,optimParallel,ggplot2,gridExtra,plotly,methods,stats
+Suggests: 
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

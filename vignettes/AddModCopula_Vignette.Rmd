@@ -1,0 +1,29 @@
+---
+title: "Application of the AddModCopula Package"
+date: "`r Sys.Date()`"
+author: "Malte Lehna"
+
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{AddModCopula_Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+Within this vignette, all functions of the AddModCopula package are explained in
+detail, with the following structure.
+
+1. Within the first section, the structure of the input factors is discussed. This includes the choices of distributions. 
+2. In the second section, the global_creg function is used to calculate the likelihood of a given set of parameters for a copula. 
+3. In the third section, the previous results are now used in the creg_opt function to optimize the parameter selection of the additive model. 
+4. In the last section, additional extension of the function are presented. 
+
+```{r setup}
+library(AddModCopula)
+```
