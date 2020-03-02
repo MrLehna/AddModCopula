@@ -68,17 +68,17 @@ summary.creg <- function(x,param=FALSE){
 #' @param x creg object
 #' @param option Object to define the respective plot.
 #'
-#'  @details The next generic function is the plot() function, which uses ggplots to
-#'  visualize the results. Similar to other generic plot functions, it is
-#'  possible to recieve different plots, by including the additional parameter
-#'  option e.g. \code{plot(x,option="likelihood3D")}.#'
-#'  The following plots are available within the function:
-#'  "likelihood2D" and "likeihood3D" display the individual likelihood of each
-#'  observation in a 2D or 3D plot. Note that the value of the likelihood
-#'  corresponds with the result of the joint density.
-#'  In addition, it is possible to plot the results of the copula density by
-#'  setting option="copula3D". If option="dataview" is selected, three plots for the
-#'  dataset are plotted. The default selection for option is "likeihood2D".
+#' @details The next generic function is the plot() function, which uses ggplots to
+#' visualize the results. Similar to other generic plot functions, it is
+#' possible to recieve different plots, by including the additional parameter
+#' option e.g. \code{plot(x,option="likelihood3D")}.#'
+#' The following plots are available within the function:
+#' "likelihood2D" and "likelihood3D" display the individual likelihood of each
+#' observation in a 2D or 3D plot. Note that the value of the likelihood
+#' corresponds with the result of the joint density.
+#' In addition, it is possible to plot the results of the copula density by
+#' setting option="copula3D". If option="dataview" is selected, three plots for the
+#' dataset are plotted. The default selection for option is "likelihood2D".
 #' @importFrom ggplot2 ggplot
 #' @importFrom ggplot2 geom_point
 #' @importFrom ggplot2 scale_colour_gradient
@@ -122,7 +122,7 @@ plot.creg <- function(x,option="likelihood2D"){
       P <-  plotly::add_markers(P)
       P <-  plotly::layout(P,scene = list(xaxis = list(title = 'X'),
                                           yaxis = list(title = 'Y'),
-                                          zaxis = list(title = 'Copula Density')))
+                                          zaxis = list(title = 'Likelihood')))
       return(P)
 
     }else{
@@ -160,10 +160,10 @@ plot.creg <- function(x,option="likelihood2D"){
           P3 <-ggplot2::ggplot(ggplot2::aes(x=Y),data=i1) +
             ggplot2::geom_density(color="#0000FF")+
             ggplot2::ggtitle("Estimated density of second data input")
-          P <- gridExtra::grid.arrange(P1, P2,P3, nrow = 3,
-                                       layout_matrix=matrix(c(1,1,2,1,1,3),3,2))
+          return(gridExtra::grid.arrange(P1, P2,P3, nrow = 3,
+                              layout_matrix=matrix(c(1,1,2,1,1,3),3,2)))
 
-          plot(P)
+         # plot(P)
 
 
           }else{stop("This option is not supported.")}
