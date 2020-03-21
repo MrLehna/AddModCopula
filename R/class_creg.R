@@ -15,7 +15,7 @@ setClass("creg")
 #'
 #' @details The print() function returns the Log-likelihood of the
 #'  copula regression
-#'  @export
+#' @export
 print.creg <- function(x){
   if (class(x)!="creg"){stop("The argument has to be from the class creg")}
 
@@ -39,7 +39,7 @@ print.creg <- function(x){
 #'  return the parameters of the distributions and the copula, both prior and
 #'  after the transformation.
 #'  \code{summary(x,param=TRUE)}
-#'  @export
+#' @export
 summary.creg <- function(x,param=FALSE){
   if (class(x)!="creg"){stop("The argument has to be from the class creg")}
   # print("Results of the creg calculation")
@@ -183,7 +183,7 @@ plot.creg <- function(x,option="likelihood2D"){
 #'
 #' @param x A creg object
 #' @export
-  AIC.creg <- function(x){
+AIC.creg <- function(x){
     # The likelihood is already negative
     r <- 2 * ncol(x$Transformed)- 2 *x$result$Likelihood
     return(r)
@@ -197,7 +197,7 @@ plot.creg <- function(x,option="likelihood2D"){
 #' @param x A creg object
 #' @export
 
-  BIC.creg <- function(x){
+BIC.creg <- function(x){
     r <- log(nrow(x$input$data)) * ncol(x$Transformed) - 2 *x$result$Likelihood
     return(r)
   }

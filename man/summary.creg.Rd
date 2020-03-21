@@ -23,5 +23,4 @@ Through the summary() function  basic details are returned.
  return the parameters of the distributions and the copula, both prior and
  after the transformation.
  \code{summary(x,param=TRUE)}
- @export
 }

@@ -16,5 +16,4 @@ S3 class creg.
 \details{
 The print() function returns the Log-likelihood of the
  copula regression
- @export
 }
