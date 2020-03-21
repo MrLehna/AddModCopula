@@ -5,7 +5,7 @@ author: "Malte Lehna"
 theme: journal
 always_allow_html: yes
 output: rmarkdown::html_document
-          
+bibliography: Sources.bib          
 vignette: >
   %\VignetteIndexEntry{AddModCopula_Vignette}
   %\VignetteEngine{knitr::rmarkdown}
@@ -24,7 +24,7 @@ source("C:/Users/malte/Documents/Studium/Bachelor VWL/BA/AddModCopula/R/class_cr
 This is the vignette to the AddModCopula package, where the functions are explained in detail. The structure is as followed: 
 
 1. In the first section, the general theory of the package in terms of the additive model are shortly discussed. 
-2. Thereafter, the structure of the input factors, which also includes the choice of distributions, is presented. 
+2. Thereafter, the structure of the input factors  is presented, which also includes the choice of distributions. 
 3. Based on the second section, the implementation of the global_creg() function is presented and the output further analyzed.  
 4. In the fourth section, the previous results are now used in the creg_opt() function to optimize the parameter selection of the additive model. 
 5. Following the general explanations and examples of the two functions, the 
@@ -39,25 +39,18 @@ copula including the associated distributions. The method of choice is an
 additive regression model, which will be explained in more detail. 
 
 The reason for the implementation of a bi-variate copula is to model a joint 
-distribution between two continuous variables  $X_1$ and $X_2$. However in many cases, this joint distribution can be rather complex, therefore it is easier to construct their relationship through a copula and their individual marginal distributions. This idea is based on the theorem of Sklar, which postulates that a joint distribution $F_{1,2}(X_1,X_2)$ of two continuous variables can be described through a uniquely defined copula, if the co-variate information 
-$\boldsymbol{\nu}$ is given: 
+distribution between two continuous variables  $X_1$ and $X_2$. However in many cases, this joint distribution can be rather complex, therefore it is easier to construct their relationship through a copula and their individual marginal distributions. This idea is based on the theorem of Sklar, which postulates that a joint distribution $F_{1,2}(X_1,X_2)$ of two continuous variables can be described through a uniquely defined copula:
+$$F_{1,2}(X_1,X_2) = C(F_{1}(X_{1} ), F_{2}(X_{2} ) )$$
+In terms of the additive model setting, we now consider that both variables $X_1$ and $X_2$ have unique distributions, which are influenced by external variables/informations $\boldsymbol{\nu}$. Thus, the Sklar theorem can be reformulated to: 
 $$F_{1,2}(X_1,X_2 \mid \boldsymbol{\nu}) = C(F_{1}(X_{1} \mid \boldsymbol{\nu}), F_{2}(X_{2} \mid \boldsymbol{\nu}) \mid \boldsymbol{\nu})$$
-Correspondingly, the copula describes joint distribution through combining both marginal distributions $F_{1}(X_1 \mid \boldsymbol{\nu})$ and $F_{2}(X_2 \mid \boldsymbol{\nu})$. If both the marginal distributions are correctly identified and the $\boldsymbol{\nu}$ is known as well, one can model the joint distribution adequately.
+Correspondingly, the copula describes joint distribution through combining both marginal distributions $F_{1}(X_1 \mid \boldsymbol{\nu})$ and $F_{2}(X_2 \mid \boldsymbol{\nu})$. If both the marginal distributions are correctly identified and the $\boldsymbol{\nu}$ is known as well, one can model the joint distribution adequately. Note that in the previous equation also the copula is dependend on the external information $\boldsymbol{\nu}$.
 
-
-Accordingly, the identification of the distributional parameters and the  
-correlation parameter is necessary in order to describe the joint distribution. Within the AddModCopula package, these parameters are estimated through an additive regression model, based on the paper of KNEIB & JOHANN. Therefore, all parameters are described through a set of explanatory variables.
-Consequently, we first have to define the underlying parameters, which in the case of the distributions of $X_1$ and $X_2$ are as followed:  
-
+Accordingly, the identification of the distributional parameters as well as the correlation parameter of the copula is necessary in order to describe the joint distribution. Within the AddModCopula package, these parameters are estimated through an additive regression model, based on the paper of [@Klein2016] as well as the Master thesis of [@Johann].  Consequently, we first have to define the underlying parameters, which in the case of the distributions of $X_1$ and $X_2$ are as followed:  
 $$ 
 X_1 \sim f(\boldsymbol{\theta}^{(1)})=f(\theta_1^{(1)},\theta_2^{(1)},...)\\
 X_2 \sim f(\boldsymbol{\theta}^{(2)})\\
 $$
-Moreover, the copula parameter is also treated as a parameter of the regression model, thus the following holds: 
-$$\boldsymbol{\nu}=\boldsymbol{\theta}^{(3)}$$
-
-
-In order to describe the thetas adequately, a relationship with external regressors has to be defined through the additive model. Therefore, we formulate for each $\theta^{(j)}$ the following model:
+Moreover, the copula parameter is also treated as a parameter of the regression model thus we denote it as $\boldsymbol{\theta}^{(3)}$. In order to describe the thetas adequately, a relationship with the external information $\boldsymbol{\nu}$ has to be defined through the additive model. Therefore, we formulate for each $\theta^{(j)}$ the following model with the corresponding $Z$ matrix regressors as part of the $\boldsymbol{\nu}$:
  
 $$
  \eta_i^{j} = \beta_{0ij} +\beta_{1ij}*z_{1ij} + ... +\beta_{lij}*z_{lij}\\
@@ -100,7 +93,7 @@ dat <- cbind(helgoland_wind$ws[10:obs], helgoland_wind$wd[10:obs])
 head(dat)
 ```
 
-The second input factors are the components of the additive model i.e. $\mathbf{Z}_{ijl}\boldsymbol{\beta}_{ijl} $ . As seen in 
+The second input factors are the components of the additive model i.e. $Z_{ijl} \boldsymbol{\beta}_{ijl}$ . As seen in 
 the theoretical explanation, each parameter of the distributions and the 
 copula, are described by the additive model. Consequently, the model is 
 constructed with a Z matrix and a beta vector for each parameter. Due to the fact that the global_creg () function was constructed quite liberal, in terms of the number of parameters per distribution, the input structure of the Z-Matrix is essential. Accordingly up to 5 parameters per distribution are allowed within the global_creg function.  Based on the format of the Z input the function determines not only the number of parameters per distribution($i$) but also the numbers of betas for each parameters ($l$). Therefore, we will discuss the 
@@ -161,9 +154,9 @@ However, some things have to be noted. First of all, it is essential that within
 the list both elements are written without a bracket i.e. list(dweibull(),
 pweibull()) will return an error statement. Moreover, if an individual
 distributions needs to be implemented, the format should be similar to the generic
-distributions of the stats package. See second distribution or last chapter for more information. 
+distributions of the stats package as defined in [@stats]. See second distribution or last chapter for more information. 
 
-In addition to the list implementation, it is also possible to include distributions from the distr package. Due to there specific format, their realization is as followed: 
+In addition to the list implementation, it is also possible to include distributions from the distr package from [@distr]. Due to there specific format, their realization is as followed: 
 ```{r message=FALSE, warning=FALSE}
 library(distr)
 ```
@@ -176,7 +169,7 @@ list is preferable is that the distributions of the dist have some
 performance disadvantages, which is especially critically for the later optimization. 
 
 The second distribution in question is the von Mises distribution, which can 
-either be implemented with the circular package or one can use the 
+either be implemented with the circular package (see [@circular]) or one can use the 
 pre-programmed function. Note that the second version to implement the von Mises distribution was specifically build for internal usage. 
 ```{r message=FALSE, warning=FALSE}
 library(circular)
@@ -217,7 +210,7 @@ copula <- "Frank"
 # 3. Implementation of the global_creg() function 
 After the overall discussion of the input structure, we can now implement the 
 global_creg() function. However prior to the calculation, it is possible to define a transformation
-function $h()$ in order to transform the parameters, i.e. recall $\theta_i^{j}= h_i^{j}(\eta_i^{j}) $
+function $h()$ in order to transform the parameters, i.e. recall $\theta_i^{j}= h_i^{j}(\eta_i^{j})$
 
 Within the global_creg() function, the transformation is conducted after the calculation of the additive model, thus assuring that the parameters are in the correct parameter space.
 A simple example is the Poisson distribution, where one has to ensure that the lambda
@@ -322,7 +315,7 @@ which accounts for the number of iterations within the optimization process.
 However, there are also two new options available. The first one is the cores 
 option. If available, users can select multiple cores in order to decrease the 
 calculation time. In the background, the creg_opt() function then uses the 
-optimParallel package in order to estimate the coefficients. However, there are 
+optimParallel package in order to estimate the coefficients, see [@optimP]. However, there are 
 some restrictions, because the optimParallel function only accepts the 
 "L-BFGS-B" as an estimation method. Furthermore, errors might occur on a 
 Windows environment, because the R version on Windows does not support parallel
@@ -389,3 +382,4 @@ data2, ddist2,pdist2.
 5. The output needs to be a vector of the same size and needs to be between 
 0 and 1. 
 
+# References:
