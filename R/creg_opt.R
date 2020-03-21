@@ -160,7 +160,7 @@ creg_opt <- function(creg,Z=NULL,data=NULL,dist1=NULL,dist2=NULL,copula=NULL,
                        infinity_control=infinity_control,
                        copula=copula,param_trans=param_trans,m=method,
                        control = list(maxit = maxit, fnscale=-1),
-                       parallel = list(cl=cl))
+                       parallel = list(cl=cl,forward=FALSE))
        end_time <- Sys.time()
      }else {
        stop("The parallel optimisation is only supported with the L-BFGS-B optimization method.")}
