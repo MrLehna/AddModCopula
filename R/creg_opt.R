@@ -152,7 +152,7 @@ creg_opt <- function(creg,Z=NULL,data=NULL,dist1=NULL,dist2=NULL,copula=NULL,
 
 
        cl <- parallel::makeCluster(spec=cores)
-       parallel_control <- list(cl=cl,forward=FALSE)
+       parallel_control <- list(cl=cl,forward=FALSE,loginfo=FALSE)
        # setDefaultCluster(cl=cl)
        start_time <- Sys.time()
         out <- optimParallel::optimParallel(
