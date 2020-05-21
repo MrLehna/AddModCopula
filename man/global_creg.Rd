@@ -88,23 +88,23 @@ Accordingly, print(), summary() and plot() functions can be applied.
 }
 \examples{
 # loading data sets
-data("helgoland_wind")
+data("zugspitze_synthetic_dataset")
 
 
 # Defining Z matrices for the parameter estimation:
-obs <- length(helgoland_wind$ws)
+obs <- length(zugspitze_synthetic_dataset$ws)
 ones <- rep(1, obs-9)
 
 # List with lagged data as exogenous variables
 Zlist <- list(
  # Weibull
  p1=list(
-   scale = cbind(ones, abs(helgoland_wind$ws[9:(obs-1)])),
-   shape_a = cbind(ones, abs(helgoland_wind$ws[9:(obs-1)]))),
+   scale = cbind(ones, abs(zugspitze_synthetic_dataset$ws[9:(obs-1)])),
+   shape_a = cbind(ones, abs(zugspitze_synthetic_dataset$ws[9:(obs-1)]))),
  # von Mises dist
  p2=list(
-   mu = cbind(ones, helgoland_wind$dwd[9:(obs-1)]),
-   kappa = cbind(ones, helgoland_wind$dwd[9:(obs-1)])),
+   mu = cbind(ones, zugspitze_synthetic_dataset$dwd[9:(obs-1)]),
+   kappa = cbind(ones, zugspitze_synthetic_dataset$dwd[9:(obs-1)])),
  # Copula
  theta = cbind(ones)
 )
@@ -120,7 +120,7 @@ transfct <- function(param){
 startbeta <- rep(1,9)
 dist1 <- list(dweibull,pweibull)
 dist2 <-"vonMises"
-dat <- cbind(helgoland_wind$ws[10:obs], helgoland_wind$wd[10:obs])
+dat <- cbind(zugspitze_synthetic_dataset$ws[10:obs], zugspitze_synthetic_dataset$wd[10:obs])
 
 # Calculation of creg:
 result <- global_creg(beta = startbeta,Z = Zlist,

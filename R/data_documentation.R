@@ -4,11 +4,14 @@
 
 #' The following dataset is available in the AddModCopula
 #'
-#' @name helgoland_wind
+#' @name zugspitze_synthetic_dataset
 #' @docType data
 #' @author Malte Lehna
-#' @description The dataset contains the hourly observations of wind speed and
-#' wind direction of the island Helgoland. The collumns are defined as followed:
+#' @description This is a synthetic data set of wind data from the German
+#' mountain Zugspitze. The data was created by estimating and resampling a data
+#' set from the German weather Service. For the detailed sampling procedure,
+#' please contact the author.
+#'
 #'
 #' ws: wind speed in m/s
 #' wd: wind direction, ranging from 0 to 2*pi
@@ -18,6 +21,7 @@
 #' @references \url{https://www.dwd.de/}
 #' @keywords data
 #' @examples
+#' # Calculation of the deviation of the wind direction
 #'calc.dwd <- function(wd) {
 #'dwd <- rep(0, length(wd))
 #'minvec <- c(0, 0, 0)

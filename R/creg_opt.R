@@ -27,7 +27,9 @@
 #' @param cores Defines the number of cores that are used for the optimization.
 #' @param maxit Defines the maximal number of iterations.
 #' @param infinity_control Optional parameter. See details
-#'
+#' @param recalculate Logical parameter, whether the optimal model should be
+#' recalculated and returned instead of the optimization results. Default is
+#' FALSE
 #' @import optimParallel
 #'
 #'
@@ -55,7 +57,8 @@
 creg_opt <- function(creg,Z=NULL,data=NULL,dist1=NULL,dist2=NULL,copula=NULL,
                      startbeta=NULL,
                      param_trans=NULL,method="L-BFGS-B",
-                     cores=1,maxit=200000, infinity_control=NULL){
+                     cores=1,maxit=200000, infinity_control=NULL,
+                     recalculate=FALSE){
   # source("R/new_creg.R")
   # source("R/global_creg.R")
 
@@ -185,9 +188,18 @@ creg_opt <- function(creg,Z=NULL,data=NULL,dist1=NULL,dist2=NULL,copula=NULL,
   # calc_time <- end_time - start_time
   # print(calc_time)
   #
-  return(out)
+  if (recalculate==FALSE){return(out)
+  }else{if (recalculate ==TRUE){
+
+    outnew <- global_creg(beta = out$par,Z = Z, data = data,
+                           param_trans=param_trans, dist1 = dist1,
+                           dist2 = dist2,copula =copula)
+
+    return(outnew)
+      }
+    }
   }
   else{stop("Incorrect attribute implemented into the cores-variable")}
   }
 
-
+### recalculate=FALSE muss noch rein !

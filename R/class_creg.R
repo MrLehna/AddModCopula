@@ -196,10 +196,10 @@ AIC.creg <- function(x){
 #'
 #' @param x A creg object
 #' @export
-
 BIC.creg <- function(x){
     r <- log(nrow(x$input$data)) * ncol(x$Transformed) - 2 *x$result$Likelihood
     return(r)
   }
+
 
 

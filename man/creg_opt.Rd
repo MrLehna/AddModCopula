@@ -16,7 +16,8 @@ creg_opt(
   method = "L-BFGS-B",
   cores = 1,
   maxit = 2e+05,
-  infinity_control = NULL
+  infinity_control = NULL,
+  recalculate = FALSE
 )
 }
 \arguments{
@@ -54,6 +55,10 @@ optimizaiton other options are: "Nelder-Mead", "BFGS", "CG", "SANN","Brent"}
 \item{maxit}{Defines the maximal number of iterations.}
 
 \item{infinity_control}{Optional parameter. See details}
+
+\item{recalculate}{Logical parameter, whether the optimal model should be
+recalculated and returned instead of the optimization results. Default is
+FALSE}
 }
 \value{
 Returns the optimizing results from the optimize function.

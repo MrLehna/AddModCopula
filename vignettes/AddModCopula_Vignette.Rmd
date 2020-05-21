@@ -21,75 +21,80 @@ knitr::opts_chunk$set(
 )
 source("C:/Users/malte/Documents/Studium/Bachelor VWL/BA/AddModCopula/R/class_creg.R")
 ```
-This is the vignette to the AddModCopula package, where the functions are explained in detail. The structure is as followed: 
+This is the manual to the AddModCopula package, in which we explain the functions of the package in more detail. We structured the manual as followed:
 
-1. In the first section, the general theory of the package in terms of the additive model are shortly discussed. 
-2. Thereafter, the structure of the input factors  is presented, which also includes the choice of distributions. 
-3. Based on the second section, the implementation of the global_creg() function is presented and the output further analyzed.  
-4. In the fourth section, the previous results are now used in the creg_opt() function to optimize the parameter selection of the additive model. 
-5. Following the general explanations and examples of the two functions, the 
-last section addresses possible extensions. 
+1. In the first section, the general theory with respect to additive copula models is shortly discussed. 
+2. Thereafter, the structure of the input factors  is presented which also includes the choice of distributions. 
+3. Based on the second section, we present the implementation of the global_creg() function and further analyze its output.  
+4. In the fourth section, we apply the previous results of the global_creg() function in the creg_opt() function in order to to optimize the parameters of the additive model. 
+5. Following the general explanations and examples of the aforementioned two functions, we address possible extensions in the last section.
 ```{r setup}
 library(AddModCopula)
 ```
 # 1. Theoretical structure of the AddModCopula package
 
-Generally, the package was written to estimate the parameters of a bi-variate 
+The package was written to estimate the parameters of a bi-variate 
 copula including the associated distributions. The method of choice is an
-additive regression model, which will be explained in more detail. 
+additive regression model which will be explained in more detail. 
 
 The reason for the implementation of a bi-variate copula is to model a joint 
-distribution between two continuous variables  $X_1$ and $X_2$. However in many cases, this joint distribution can be rather complex, therefore it is easier to construct their relationship through a copula and their individual marginal distributions. This idea is based on the theorem of Sklar, which postulates that a joint distribution $F_{1,2}(X_1,X_2)$ of two continuous variables can be described through a uniquely defined copula:
+distribution between two continuous random variables  $X_1$ and $X_2$. However, this joint distribution can be rather complex  in practice . Therefore it is easier to construct the relationship between the two continous random variables through a copula and their individual marginal distributions. In general, a copula can be defined as a function that combines the marginal distributions of multiple random variables in order to describe their joint distribution. Based on the theorem of Sklar, we are able to describe this relationship in a two dimensional approach. Thus, according to Sklar we postulates that a joint distribution $F_{1,2}(X_1,X_2)$ of two continuous random variables can be described through a uniquely defined copula.
 $$F_{1,2}(X_1,X_2) = C(F_{1}(X_{1} ), F_{2}(X_{2} ) )$$
-In terms of the additive model setting, we now consider that both variables $X_1$ and $X_2$ have unique distributions, which are influenced by external variables/informations $\boldsymbol{\nu}$. Thus, the Sklar theorem can be reformulated to: 
+In terms of the additive model setting, we now consider that both variables $X_1$ and $X_2$ have unique distributions which are influenced by external variables $\boldsymbol{\nu}$ e.g. prior informations. Thus, the Sklar theorem can be reformulated to the following equation.  
 $$F_{1,2}(X_1,X_2 \mid \boldsymbol{\nu}) = C(F_{1}(X_{1} \mid \boldsymbol{\nu}), F_{2}(X_{2} \mid \boldsymbol{\nu}) \mid \boldsymbol{\nu})$$
-Correspondingly, the copula describes joint distribution through combining both marginal distributions $F_{1}(X_1 \mid \boldsymbol{\nu})$ and $F_{2}(X_2 \mid \boldsymbol{\nu})$. If both the marginal distributions are correctly identified and the $\boldsymbol{\nu}$ is known as well, one can model the joint distribution adequately. Note that in the previous equation also the copula is dependend on the external information $\boldsymbol{\nu}$.
+Correspondingly, the copula describes a joint distribution through combining both marginal distributions $F_{1}(X_1 \mid \boldsymbol{\nu})$ and $F_{2}(X_2 \mid \boldsymbol{\nu})$. If both marginal distributions are correctly identified and prior information $\boldsymbol{\nu}$ is known as well, one can model the joint distribution adequately. 
 
-Accordingly, the identification of the distributional parameters as well as the correlation parameter of the copula is necessary in order to describe the joint distribution. Within the AddModCopula package, these parameters are estimated through an additive regression model, based on the paper of [@Klein2016] as well as the Master thesis of [@Johann].  Consequently, we first have to define the underlying parameters, which in the case of the distributions of $X_1$ and $X_2$ are as followed:  
+Accordingly, the identification of the distributional parameters as well as the correlation parameters of the copula are necessary in order to describe the joint distribution. Within the AddModCopula package, these parameters are estimated through an additive regression model based on the paper of [@Klein2016] as well as the Master thesis of [@Johann].  In order to describe the additive model structure, we first have to define the underlying distributional parameters. In the case of the continous random variables $X_1$ and $X_2$ we define their distribution quite general:
 $$ 
 X_1 \sim f(\boldsymbol{\theta}^{(1)})=f(\theta_1^{(1)},\theta_2^{(1)},...)\\
-X_2 \sim f(\boldsymbol{\theta}^{(2)})\\
+X_2 \sim g(\boldsymbol{\theta}^{(2)})\\
 $$
-Moreover, the copula parameter is also treated as a parameter of the regression model thus we denote it as $\boldsymbol{\theta}^{(3)}$. In order to describe the thetas adequately, a relationship with the external information $\boldsymbol{\nu}$ has to be defined through the additive model. Therefore, we formulate for each $\theta^{(j)}$ the following model with the corresponding $Z$ matrix regressors as part of the $\boldsymbol{\nu}$:
- 
+Both $f()$ and $g()$ are probability density functions (pdf) which are dependent on one or more distributional parameters ($\boldsymbol{\theta}^{(1)}$ and $\boldsymbol{\theta}^{(2)}$) that describe the respective probability mass. Note that through the general definition we allow for a variety of distributions in our package. 
+
+
+With this general parameter definition, we now formulate the additive regression model. Here the primary goal of the model is to estimate the distributional parameters in such manner that they explain the observations of  continous random variables $X_1$ and $X_2$ in the most probable way. For the estimation, we
+implement the prior information $\boldsymbol{\nu}$ as external variables in the model, while the distributional parameters $\boldsymbol{\theta}^{(1)}$ and $\boldsymbol{\theta}^{(2)}$ are seen as endogenous variables. Additionally, we include the copula parameter as an estimable parameter as well and we denote it by $\boldsymbol{\theta}^{(3)}$. 
+However, due to the fact that in many cases the parameters of the distributions are restricted to a specific parameter space, we introduce a transformation function prior to the additive model. Thus, for each model parameter $\theta_i^{(j)}$ a transformation function $h_{ij}()$ is implemented:
+$$\theta_i^{j}= h_{ij}(\eta_i^{j}) \\
+\eta_i^{j} =  h_{ij}^{\ \ -1} (\theta_i^{j})
+$$
+Note that these transformation functions can differ across  the parameters and distributions. In addition, the transformation can further be applied to enhance the optimization process. Given the transformed $\eta_i^{j}$ values, we are now able to construct the additive model. For this purpose, we store the prior information $\boldsymbol{\nu}$ for each $\eta_i^{j}$ in respective $Z_{ij}$ matrices. Thereafter, we formulate the following additive regression equation:
 $$
  \eta_i^{j} = \beta_{0ij} +\beta_{1ij}*z_{1ij} + ... +\beta_{lij}*z_{lij}\\
  =\mathbf{Z}_{ij}\boldsymbol{\beta_{ij}}
 $$
 Note that $j=1,2,3$ depicts the respective distribution/copula, while $i=1,..5$ denotes the number of parameters within each distribution. The number of external parameters $l$ is in this case arbitrary, with $l=0$ defining an intercept model. Moreover, it is also possible to formulate a global additive model, by combining all parameters in an $\boldsymbol{\eta}$ matrix. Note that the parameter within the matrix $\boldsymbol{\eta}$ are not only varying across distributions but are also variable over the observations. The $\boldsymbol{\eta}$ matrix is therefore defined as followed: 
 $$ \boldsymbol{\eta} = \beta_{0}\mathbf{1}_{n} +\mathbf{Z}_{1}\boldsymbol{\beta}_{1} + ... + \mathbf{Z}_{L}\boldsymbol{\beta}_{L} $$
+In order to describe and optimize these regression models, we define a likelihood based on the joint density $p_{1,2}$ of the joint distribution $F_{1,2}(X_1,X_2)$. For this purpose, we define the marginal densities of $F_{1}(X_{1})$ and $F_{2}(X_{2})$ as $p_1(\theta^{(1)}\mid \boldsymbol{\nu})$ and $p_2(\theta^{(2)}\mid \boldsymbol{\nu})$. Furthermore, recall that also the copula is dependent on the external information. Thus the copula density can be described by $c(\boldsymbol{\theta}^{(3)}\mid \boldsymbol{\nu})$.
+Based on the marginal densities, we are now able to describe the joint density for the observation $x_{k1}$ and $x_{k2}$ (with $k=1,...,n$) of the continous random variabes as followed:  
+$$p_{1,2}(x_{k1},x_{k2}\mid \boldsymbol{\nu}) = p_1(\boldsymbol{\theta_k}^{(1)}\mid \boldsymbol{\nu})(x_{k1}) \ \  p_2(\boldsymbol{\theta_k}^{(2)}\mid \boldsymbol{\nu})(x_{k2}) \ \  c(\boldsymbol{\theta_k}^{(3)}\mid \boldsymbol{\nu})  $$ 
+As one can see, the joint density of the two variables is described, by combining the two marginal distributions with the density of the copula function.
+However, recall that due to the different values within the Z matrices, it is possible that the parameters $\eta_i^{(j)}$ and therefore $\theta_i^{(j)}$ change across observation. Therefore, each $\boldsymbol{\theta}^{(j)}$ vector has an index k in the previous equation.
 
-Due to the different parameter spaces, it is possible that the $\eta_i^{(j)}$ do not correspond directly to the $\theta_i^{(j)}$ parameter. As a result, we implement a transformation function $h()$,which translates each parameter accordingly. Again note that these transformation functions can differ across parameters and distributions.
-$$\theta_i^{j}= h_i^{j}(\eta_i^{j}) $$
-
-
-In order to describe and optimize these regression models, we define a likelihood based on the joint density. Therefore, we use the previously mentioned properties of the copula in terms of the joint density:
-
-$$p_{1,2}(X_1,X_2\mid \boldsymbol{\nu}) = p_{1}\, p_{2}\, c $$ 
-The joint density of the two variables is described, by combining the two marginal distributions with the density of the copula function. Logically, this relationship can be translated to the data, by formulating it for each observation of the continuous variables $x_{k1}$ and $x_{k2}$ (with $k=1,...,n$ observations). 
-Based on this, we implement the previous formula as the sum of the logarithmic joint density, denoted as the log-likelihood for all observations: 
+In order to describe the overall likelihood of the parameters, we now only have to combine the joint densities of the individual observations. Thus, the total log-likelihood of all observations can be formulated as the sum of all logarithmic joint densities: 
 $$
-l=\sum_{k=1}^{n}{\log \left( p_{1,2}(x_{k1},x_{k2}\mid \boldsymbol{\nu}_k \right) } =\sum_{k=1}^{n}{\log \left(p_{1}(x_{k1})\, p_{2}(x_{k2})\, c_k \right)}
+l=\sum_{k=1}^{n}\log \left(p_{1,2}(x_{k1},x_{k2}\mid \boldsymbol{\nu}) \right) =\sum_{k=1}^{n}\log \left(p_1(\boldsymbol{\theta_k}^{(1)}\mid \boldsymbol{\nu})(x_{k1}) \ \  p_2(\boldsymbol{\theta_k}^{(2)}\mid \boldsymbol{\nu})(x_{k2})\ \ c(\boldsymbol{\theta_k}^{(3)}\mid \boldsymbol{\nu}) \right)
 $$
-In combination with the additive model, we are now able to maximize the log-likelihood for a given data set. The variable of interest are the beta coefficients of the Z matrices i.e. the explanatory variables. Again recall  that due to the different values within the Z matrices, it is possible that the parameters $\eta_i^{(j)}$ and therefore $\theta_i^{(j)}$ change across observation. Therefore, only the beta coefficients are constant across the sample. 
+Based on this total log-likelihood, we are now able to estimate the respective parameters $\boldsymbol{\theta}^{(j)}$ given the data set of $X_1$,$X_2$ as well as the external variables $\boldsymbol{\nu}$. Within the additive model, the variable of interest are the beta coefficients of the Z matrices which describe the effect of the exogenous variable. 
 
 After this short introduction of the theoretical composition of the additive regression copula model, we will now analyze the structure of the functions within this package. 
 
 # 2. Discussion of the input format of the data  
-Before reviewing the implementation of the previous discussed model in the global_creg() function, we first have to talk about the required data. Therefore, we begin by analyzing the observations of $X_1$ and $X_2$. Afterwards, the structure of the exogenous variables (i.e. Z-Matrices and betas) are discussed, which are vital for the functionality of the function. As a final part, the input options for the distributions and copulas are presented. To give a better understanding, we will use the example data set within this vignette to model the underlying structure.
+Before reviewing the implementation of the previous discussed model in the global_creg() function, we first have to talk about the required data. Therefore, we begin by analyzing the observations of $X_1$ and $X_2$. Afterwards, the structure of the exogenous variables (i.e. Z-Matrices and betas) are discussed which are vital for the functionality of the function. As a final part, the input options for the distributions and copulas are presented. To give a better understanding, we will use the example data set within this vignette to model the underlying structure.
 
 To begin with, the first input variable for the global_creg () function are the observations of the continuous variables. 
 Due to the fact, that this package only supports a bi-variate 
 copula with two distributions, the underlying data needs to be in a two 
-dimensional form as well. In case of the example data set, the copula package 
-is used to describe the wind data from the island Helgonland(Germany). 
-Accordingly, the first dimension is the wind speed and the second dimension is 
+dimensional form as well. This statement also holds for the example data set, 
+were we provide the wind data of the German mountain 'Zugspitze'. However, 
+for legal reasons this data is a synthetic dataset which was created from the 
+original data. Nevertheless, the first dimension is the wind speed and the second dimension is 
 the wind direction. Note that because the previous observations are used as 
 explanatory data, the first ten observations are discarded as lags. 
 ```{r}
-data("helgoland_wind")
-obs <- length(helgoland_wind$ws)
-dat <- cbind(helgoland_wind$ws[10:obs], helgoland_wind$wd[10:obs])
+data("zugspitze_synthetic_dataset")
+obs <- length(zugspitze_synthetic_dataset$ws)
+dat <- cbind(zugspitze_synthetic_dataset$ws[10:obs], zugspitze_synthetic_dataset$wd[10:obs])
 head(dat)
 ```
 
@@ -100,7 +105,7 @@ constructed with a Z matrix and a beta vector for each parameter. Due to the fac
 Z-matrix input in more detail. 
 
 In order to display the structure and the numbers of parameters correctly, the 
-function requires a list object as Z-matrix input, which in turn consists of 
+function requires a list object as Z-matrix input which in turn consists of 
 three list object. 
 The first and second object are the parameters of the corresponding 
 distribution, while the third object is the parameter matrix of the copula. 
@@ -112,7 +117,7 @@ list needs to be implemented.
 In case of the example, a Weibull distribution for the wind speed and a von
 Mises distribution for the wind direction were chosen to model the underlying 
 data.  For both distributions, two parameters are required in order 
-to describe their marginal density. Moreover, as copula we chose the Frank copula, which requires another parameter, thus resulting in a total of five 
+to describe their marginal density. Moreover, as copula we chose the Frank copula which requires another parameter, thus resulting in a total of five 
 parameters for each observation. Note again that as explanatory variables 
 of the distributional parameters, the model is constructed with previous
 observations of the wind data. 
@@ -120,12 +125,12 @@ observations of the wind data.
 Zlist <- list(
   # Weibull
   p1=list(
-    scale = cbind(rep(1, obs-9), abs(helgoland_wind$ws[9:(obs-1)])),
-    shape_a = cbind(rep(1, obs-9), abs(helgoland_wind$ws[9:(obs-1)]))),
+    scale = cbind(rep(1, obs-9), abs(zugspitze_synthetic_dataset$ws[9:(obs-1)])),
+    shape_a = cbind(rep(1, obs-9), abs(zugspitze_synthetic_dataset$ws[9:(obs-1)]))),
   # von Mises dist
   p2=list(
-    mu = cbind(rep(1, obs-9), helgoland_wind$dwd[9:(obs-1)]),
-    kappa = cbind(rep(1, obs-9), helgoland_wind$dwd[9:(obs-1)])),
+    mu = cbind(rep(1, obs-9), zugspitze_synthetic_dataset$dwd[9:(obs-1)]),
+    kappa = cbind(rep(1, obs-9), zugspitze_synthetic_dataset$dwd[9:(obs-1)])),
   # Copula
   theta = cbind(rep(1, obs-9))
 )
@@ -135,7 +140,7 @@ another list within the list, with two matrices for each parameter. Note that fo
 reasons, all Z matrices and the data matrix have to have the same length of 
 observations (i.e. the same row length).
 
-The second part of the additive models are the beta coefficients, which define
+The second part of the additive models are the beta coefficients which define
 the effect of the explanatory variables. Even though these are the variables of interest, the global_creg() function requires some starting values. However in contrast to the Z-Matrix, the beta values one require a vector input with the correct length. In case of the example, the 
 betas are set to one in order to offer adequate starting values:
 ```{r}
@@ -166,9 +171,9 @@ dist1 <- Weibull
 Note again that in order to work, the distribution needs to be implemented 
 without a bracket. The reason, why the implementation through the 
 list is preferable is that the distributions of the dist have some 
-performance disadvantages, which is especially critically for the later optimization. 
+performance disadvantages which is especially critically for the later optimization. 
 
-The second distribution in question is the von Mises distribution, which can 
+The second distribution in question is the von Mises distribution which can 
 either be implemented with the circular package (see [@circular]) or one can use the 
 pre-programmed function. Note that the second version to implement the von Mises distribution was specifically build for internal usage. 
 ```{r message=FALSE, warning=FALSE}
@@ -200,7 +205,7 @@ copulas are implemented in order to describe the two dimensional data.
 These copulas are the "Frank", "Gumbel" and "Clayton" copula. In addition, we
 also implemented the "Gaussian" copula as well. For further description of 
 the copula we refer to the paper of LINK!.# Note that it is also possible to 
-implement other copulas, which will be discussed in the last chapter. 
+implement other copulas which will be discussed in the last chapter. 
 In case of the example, the Frank copula was chosen: 
 ```{r}
 copula <- "Frank"
@@ -242,21 +247,21 @@ result <- global_creg(beta = startbeta,Z = Zlist,
                       dist1 = dist1,dist2 = "vonMises",copula = "Frank")
 
 ```
-The output of the global_creg() function is a large list, which includes 
+The output of the global_creg() function is a large list which includes 
 both the input variables as well as the results of the calculation. Thus it is possible to access all results in the list object.  Moreover, the output is defined as a specific S3 class with generic functions. Per default, the printing function the global_creg() function returns the total 
 log-likelihood for the given beta and Z matrices. 
 ```{r}
 print(result)
 ```
 
-Next to the print function, other generic functions are implemented, which are  the summary function, the plot function and the AIC/BIC functions. In case of the summary function, it is possible to receive the parameters of the distributions/copula by setting param=TRUE. This step was incorporated in order to double check the results of the transformation function. 
+Next to the print function, other generic functions are implemented which are  the summary function, the plot function and the AIC/BIC functions. In case of the summary function, it is possible to receive the parameters of the distributions/copula by setting param=TRUE. This step was incorporated in order to double check the results of the transformation function. 
 ```{r}
 summary(result)
 out <- summary(result,param = TRUE)
 head(out$`Parameter before transformation`)
 head(out$`Parameter after transformation`)
 ```
-The next generic function is the plot() function, which uses ggplots to 
+The next generic function is the plot() function which uses ggplots to 
 visualize the results. Similar to other generic plot functions, it is possible 
 to receive different plots, by including the additional parameter option e.g. plot(x,option="likelihood3D"). The following plots are available within the 
 option argument. "likelihood2D" and "likelihood3D" display the individual likelihood 
@@ -301,10 +306,11 @@ creg_opt(Z = Zlist,  data =dat, dist1 = dist1,dist2 ="vonMises",
          method = "L-BFGS-B",
          cores = 1,
          maxit = 10,
-         infinity_control = NULL
+         infinity_control = NULL,
+         recalculate=FALSE
 )
 ```
-Depending on the input choice, there are different ways to assign starting beta values. In the first option, the creg_opt() function takes the beta values, which were implemented within the global_creg function. Otherwise, one can assign a specific value through the startbeta variable. If no beta values are supplied (as seen in Option 2.) then function will assign a 
+Depending on the input choice, there are different ways to assign starting beta values. In the first option, the creg_opt() function takes the beta values which were implemented within the global_creg function. Otherwise, one can assign a specific value through the startbeta variable. If no beta values are supplied (as seen in Option 2.) then function will assign a 
 default beta value of 1 to all coefficients. 
 
 Furthermore, there are some options which are similar to the basic optim() function.
@@ -331,6 +337,11 @@ cases, the optimization methods are able to handle this problem, except for the
 their individual lower/upper bound for the total log-likelihood into the 
 infinity_control variable. This switch is conducted for all methods. 
 
+Moreover, as a small third choice it is possible to recalculate the model within
+the creg_opt() function. By setting recalculate==TRUE, the optimal parameters are
+implemented into the function and the return is similar to the global_creg() 
+function.
+
 
 Overall, the output of the creg_opt() function is similar to the normal optim() function.
 Therefore the function calls are similar (see ?optim for more information).
@@ -341,7 +352,7 @@ loglikelihood <- result$result$Likelihood
 ```
 
 # 5. Further extensions
-In the last section, we shortly address the individual distributions and copulas, which can be supplied for the global_creg() function. It is important to note that for the copula, you have to supply the density of the copula and not the general structure 
+In the last section, we shortly address the individual distributions and copulas which can be supplied for the global_creg() function. It is important to note that for the copula, you have to supply the density of the copula and not the general structure 
 
 In terms of the self written distributions, we already discussed the necessary shape with the von Mises distribution. Recall, that the correct order within the list argument has to be the density d() and then the cdf with p():
 ```{r}
