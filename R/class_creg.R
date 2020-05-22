@@ -45,7 +45,7 @@ summary.creg <- function(x,param=FALSE){
   # print("Results of the creg calculation")
   if(param==FALSE){
   out <- list("Provided betas for the parameters:"=x$input$beta,
-       "Number of regression parameters:"=ncol(x$Non_transformed),
+       "Number of distributional parameters:"=ncol(x$Non_transformed),
        "Chosen Copula:"=x$input$copula,
        "Result Log-Likelihood"=x$result$Likelihood)
   }else{
