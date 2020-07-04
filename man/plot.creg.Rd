@@ -4,12 +4,12 @@
 \alias{plot.creg}
 \title{Plot function for class creg}
 \usage{
-plot.creg(x, ...)
+\method{plot}{creg}(x, ...)
 }
 \arguments{
 \item{x}{creg object}
 
-\item{...}{optionally more fitted model objects, e.g. option="likelihood2D"}
+\item{...}{optional parameters e.g. option. See details for more information.}
 }
 \description{
 This function implements the generic plot functions for the
@@ -18,7 +18,7 @@ S3 class creg
 \details{
 The next generic function is the plot() function, which uses ggplots to
 visualize the results. Similar to other generic plot functions, it is
-possible to recieve different plots, by including the additional parameter
+possible to receive different plots, by including the additional parameter
 option e.g. \code{plot(x,option="likelihood3D")}.#'
 The following plots are available within the function:
 "likelihood2D" and "likelihood3D" display the individual likelihood of each
@@ -26,5 +26,5 @@ observation in a 2D or 3D plot. Note that the value of the likelihood
 corresponds with the result of the joint density.
 In addition, it is possible to plot the results of the copula density by
 setting option="copula3D". If option="dataview" is selected, three plots for the
-dataset are plotted. The default selection for option is "likelihood2D".
+data set are plotted. The default selection for option is "likelihood2D".
 }

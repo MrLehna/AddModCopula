@@ -129,6 +129,9 @@ result <- global_creg(beta = startbeta,Z = Zlist,
 print(result)
 summary(result)
 summary(result,param=TRUE) # Reporting of the distr. parameter
+
+# Get BIC:
+AIC(result,BIC=TRUE)
 # Possible plotting:
 # plot(result)
 # Possible optimisation through creg_opt
