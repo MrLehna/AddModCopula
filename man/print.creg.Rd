@@ -4,12 +4,12 @@
 \alias{print.creg}
 \title{Print function for class creg}
 \usage{
-print.creg(x, ...)
+\method{print}{creg}(x, ...)
 }
 \arguments{
 \item{x}{creg object}
 
-\item{...}{optionally more fitted model objects.}
+\item{...}{Optional parameters}
 }
 \description{
 This function implements the generic print functions for the

@@ -35,7 +35,7 @@ transWRONG <- function(x){
   x[,4] <- exp(x[,4])
   return(x)
 }
-
+skip_on_cran()
 test_that("Testing for optimization:", {
   a<- global_creg(beta=beta1,Z=Z1,data=dat1,
                   dist1=Norm,dist2=Pois,

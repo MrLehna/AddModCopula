@@ -4,13 +4,12 @@
 \alias{summary.creg}
 \title{Summary function for class creg}
 \usage{
-\method{summary}{creg}(x, ...)
+\method{summary}{creg}(object, ...)
 }
 \arguments{
-\item{x}{creg object}
+\item{object}{creg object}
 
-\item{...}{As an additional option, it is possible to add param=TRUE to
-display the parameters of the distribution.}
+\item{...}{Optional parameters e.g. param=TRUE}
 }
 \description{
 This function implements the generic summary functions for the
@@ -19,7 +18,8 @@ S3 class creg
 \details{
 Through the summary() function  basic details are returned.
  If wanted, additional information can be collected through including the
- paramter param=TRUE. Accordingly,  the summary function will also
+ parameter param=TRUE. Accordingly,  the summary function will also
  return the parameters of the distributions and the copula, both prior and
  after the transformation.
+ \code{summary(object,param=TRUE)}
 }

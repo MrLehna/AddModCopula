@@ -16,7 +16,7 @@ test_that("testing generic functions of creg", {
 
   # Summary:
   t2 <- summary(tf)
-  t3 <-summary(tf,parameter=TRUE)
+  t3 <-summary(tf,param=TRUE)
   expect_equal(t2[[1]],c(1,1))
   expect_equal(t2[[2]],2)
   expect_equal(t2$`Result Log-Likelihood`,42)
@@ -31,6 +31,6 @@ test_that("testing generic functions of creg", {
   # AIC
   expect_equal(AIC(tf),-80)
   #BIC
-  expect_equal(round(BIC(tf),digits=2),-82.61)
+  expect_equal(round(AIC(tf,BIC=TRUE),digits=2),-82.61)
 })
 

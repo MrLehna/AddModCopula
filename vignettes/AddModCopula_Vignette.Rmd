@@ -14,13 +14,7 @@ vignette: >
 
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-source("C:/Users/malte/Documents/Studium/Bachelor VWL/BA/AddModCopula/R/class_creg.R")
-```
+
 This is the manual to the AddModCopula package, in which we explain the functions of the package in more detail. We structured the manual as followed:
 
 1. In the first section, the general theory with respect to additive copula models is shortly discussed. 
@@ -279,7 +273,8 @@ Finally, the last two generic functions are the AIC and the BIC.
 They are computed with the total log-likelihood. 
 ```{r}
 AIC(result)
-BIC(result)
+BIC= AIC(result,BIC=TRUE)
+BIC
 ```
 
 

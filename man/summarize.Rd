@@ -2,17 +2,17 @@
 % Please edit documentation in R/class_creg.R
 \name{summarize}
 \alias{summarize}
-\title{Assisting Summary function for class creg}
+\title{Helper Summary function for class creg}
 \usage{
-summarize(x, parameter, ...)
+summarize(x, param, ...)
 }
 \arguments{
 \item{x}{creg object}
 
-\item{parameter}{Logical, can be used to display the parameters of the
+\item{param}{Logical, can be used to display the parameters of the
 distribution.}
 
-\item{...}{optionally more fitted model objects.}
+\item{...}{Additional Parameters optional}
 }
 \description{
 This function implements the generic summary functions for the
