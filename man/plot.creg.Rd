@@ -4,18 +4,104 @@
 \alias{plot.creg}
 \title{Plot function for class creg}
 \usage{
-plot.creg(x, option = "likelihood2D")
+plot.creg(x, option = "likelihood2D", ...)
 }
 \arguments{
 \item{x}{creg object}
 
 \item{option}{Object to define the respective plot.}
+
+\item{...}{optionally more fitted model objects.}
 }
 \description{
 This function implements the generic plot functions for the
 S3 class creg
 }
 \details{
+#' Plot function for class creg
+#'
+#' @description This function implements the generic plot functions for the
+#' S3 class creg
+#'
+#' @param x creg object
+#' @param option Object to define the respective plot.
+#' @param ... optionally more fitted model objects.
+#' @details The next generic function is the plot() function, which uses ggplots to
+#' visualize the results. Similar to other generic plot functions, it is
+#' possible to recieve different plots, by including the additional parameter
+#' option e.g. \code{plot(x,option="likelihood3D")}.#'
+#' The following plots are available within the function:
+#' "likelihood2D" and "likelihood3D" display the individual likelihood of each
+#' observation in a 2D or 3D plot. Note that the value of the likelihood
+#' corresponds with the result of the joint density.
+#' In addition, it is possible to plot the results of the copula density by
+#' setting option="copula3D". If option="dataview" is selected, three plots for the
+#' dataset are plotted. The default selection for option is "likelihood2D".
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_point
+#' @importFrom ggplot2 scale_colour_gradient
+#' @importFrom ggplot2 ggtitle
+#' @importFrom ggplot2 geom_density
+#' @importFrom plotly plot_ly
+#' @importFrom plotly add_markers
+#' @importFrom plotly layout
+#' @importFrom gridExtra grid.arrange
+#'
+#' @export
+#'
+R.methodsS3::setMethodS3("plot","creg" , function(
+                         x,option="likelihood2D", ...){
+  if (class(x)!="creg"){stop("The argument has to be from the class creg")};
+  if (option=="likelihood2D"){
+    input <- as.data.frame(cbind(x$input$data,x$result$Joint_density));
+    colnames(input) <- c("X","Y","density");
+    P <- ggplot2::ggplot()+ggplot2::geom_point(
+      ggplot2::aes(x=X,y=Y,color=density),alpha=0.4,data = input,
+      show.legend = TRUE)+ggplot2::scale_colour_continuous(
+        low = "blue", high = "red");return(P);
+  }else{if (option=="likelihood3D"){X <- x$input$data[,1];
+  Y <-  x$input$data[,2];
+  density <- x$result$Cdensity;
+  P <- plotly::plot_ly( x =~X, y = ~Y, z = ~density,size=0.5,
+                        marker = list(color = ~density,
+                                      colorscale = "Hot",
+                                      showscale = TRUE));
+  P <- plotly::add_trace(P, type="scatter3d",mode="markers");
+  P <-  plotly::add_markers(P);
+  P <-  plotly::layout(P,scene = list(xaxis = list(title = 'X'),
+                                      yaxis = list(title = 'Y'),
+                                      zaxis = list(title = 'Likelihood')));
+  return(P)}else{if(option=="copula3D"){
+    X <- x$input$data[,1];
+    Y <-  x$input$data[,2];
+    density <- x$result$Cdensity;
+    P <- plotly::plot_ly( x =~X, y = ~Y, z = ~density,size=2.5,
+                          marker = list(color = ~density,
+                                        colorscale = c('#00CCFF', '#0000FF'),
+                                        showscale = TRUE));
+    P <- plotly::add_trace(P, type="scatter3d",mode="markers");
+    P <-  plotly::add_markers(P);
+    P <-  plotly::layout(P,scene = list(xaxis = list(title = 'X'),
+                                        yaxis = list(title = 'Y'),
+                                        zaxis = list(title = 'Copula Density')));
+    return(P);
+  }else{if (option=="dataview"){
+    i1 <- as.data.frame(x$input$data);
+    colnames(i1) <- c("X","Y");
+    P1 <- ggplot2::ggplot()+ggplot2::geom_point(ggplot2::aes(x=X,y=Y),
+                                                alpha=0.4,data =i1,color="#0000FF")+
+      ggplot2::ggtitle("Scatterplot of Data");
+    P2 <-ggplot2::ggplot(ggplot2::aes(x=X),data=i1) +
+      ggplot2::geom_density(color="#0000FF")+
+      ggplot2::ggtitle("Estimated density of first data input");
+    P3 <-ggplot2::ggplot(ggplot2::aes(x=Y),data=i1) +
+      ggplot2::geom_density(color="#0000FF")+
+      ggplot2::ggtitle("Estimated density of second data input");
+    return(gridExtra::grid.arrange(P1, P2,P3, nrow = 3,
+                                   layout_matrix=matrix(c(1,1,2,1,1,3),3,2)));
+  }else{stop("This option is not supported.")}}}};
+},createGeneric=TRUE,exportGeneric=TRUE,overwrite=TRUE,export=TRUE)
+
 The next generic function is the plot() function, which uses ggplots to
 visualize the results. Similar to other generic plot functions, it is
 possible to recieve different plots, by including the additional parameter

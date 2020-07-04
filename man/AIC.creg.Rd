@@ -4,10 +4,14 @@
 \alias{AIC.creg}
 \title{Generic AIC function for class creg}
 \usage{
-\method{AIC}{creg}(x)
+\method{AIC}{creg}(x, ..., k = 2)
 }
 \arguments{
 \item{x}{A creg object}
+
+\item{...}{optionally more fitted model objects.}
+
+\item{k}{Penalty term (default is 2)}
 }
 \description{
 This function implements the generic AIC function for the S3 class

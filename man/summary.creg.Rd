@@ -4,13 +4,15 @@
 \alias{summary.creg}
 \title{Summary function for class creg}
 \usage{
-\method{summary}{creg}(x, param = FALSE)
+\method{summary}{creg}(x, param = FALSE, ...)
 }
 \arguments{
 \item{x}{creg object}
 
 \item{param}{Logical, can be used to display the parameters of the
 distribution.}
+
+\item{...}{optionally more fitted model objects.}
 }
 \description{
 This function implements the generic summary functions for the

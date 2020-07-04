@@ -4,16 +4,35 @@
 \alias{print.creg}
 \title{Print function for class creg}
 \usage{
-print.creg(x)
+print.creg(x, ...)
 }
 \arguments{
 \item{x}{creg object}
+
+\item{...}{optionally more fitted model objects.}
 }
 \description{
 This function implements the generic print functions for the
 S3 class creg.
 }
 \details{
+#'
+#' Print function for class creg
+#'
+#' @description This function implements the generic print functions for the
+#' S3 class creg.
+#'
+#' @param x creg object
+#' @param ... optionally more fitted model objects.
+#'
+#' @details The print() function returns the Log-likelihood of the
+#'  copula regression
+#' @import R.methodsS3
+R.methodsS3::setMethodS3(name="print",class="creg", function(x,...){
+  if (class(x)!="creg"){stop("The argument has to be from the class creg")}else{
+  print("Result Log-Likelihood");print(x$result$Likelihood)};
+  },createGeneric=TRUE,exportGeneric=TRUE,overwrite=TRUE,export=TRUE)
+
 The print() function returns the Log-likelihood of the
  copula regression
 }

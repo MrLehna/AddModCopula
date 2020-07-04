@@ -4,10 +4,12 @@
 \alias{BIC.creg}
 \title{Generic BIC function for class creg}
 \usage{
-\method{BIC}{creg}(x)
+\method{BIC}{creg}(x, ...)
 }
 \arguments{
 \item{x}{A creg object}
+
+\item{...}{optionally more fitted model objects.}
 }
 \description{
 This function implements the generic BIC function for the S3 class
