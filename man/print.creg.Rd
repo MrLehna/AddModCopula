@@ -4,7 +4,7 @@
 \alias{print.creg}
 \title{Print function for class creg}
 \usage{
-\method{print}{creg}(x, ...)
+print.creg(x, ...)
 }
 \arguments{
 \item{x}{creg object}

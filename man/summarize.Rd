@@ -4,12 +4,12 @@
 \alias{summarize}
 \title{Assisting Summary function for class creg}
 \usage{
-summarize(x, param, ...)
+summarize(x, parameter, ...)
 }
 \arguments{
 \item{x}{creg object}
 
-\item{param}{Logical, can be used to display the parameters of the
+\item{parameter}{Logical, can be used to display the parameters of the
 distribution.}
 
 \item{...}{optionally more fitted model objects.}

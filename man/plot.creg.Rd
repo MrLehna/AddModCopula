@@ -4,14 +4,12 @@
 \alias{plot.creg}
 \title{Plot function for class creg}
 \usage{
-\method{plot}{creg}(x, option = "likelihood2D", ...)
+plot.creg(x, ...)
 }
 \arguments{
 \item{x}{creg object}
 
-\item{option}{Object to define the respective plot.}
-
-\item{...}{optionally more fitted model objects.}
+\item{...}{optionally more fitted model objects, e.g. option="likelihood2D"}
 }
 \description{
 This function implements the generic plot functions for the

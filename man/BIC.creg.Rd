@@ -2,12 +2,12 @@
 % Please edit documentation in R/class_creg.R
 \name{BIC.creg}
 \alias{BIC.creg}
-\title{Generic BIC function for class creg}
+\title{@title Generic BIC function for class creg}
 \usage{
-\method{BIC}{creg}(x, ...)
+\method{BIC}{creg}(object, ...)
 }
 \arguments{
-\item{x}{A creg object}
+\item{object}{A creg object}
 
 \item{...}{optionally more fitted model objects.}
 }

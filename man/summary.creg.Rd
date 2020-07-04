@@ -4,15 +4,13 @@
 \alias{summary.creg}
 \title{Summary function for class creg}
 \usage{
-\method{summary}{creg}(x, param = FALSE, ...)
+\method{summary}{creg}(x, ...)
 }
 \arguments{
 \item{x}{creg object}
 
-\item{param}{Logical, can be used to display the parameters of the
-distribution.}
-
-\item{...}{optionally more fitted model objects.}
+\item{...}{As an additional option, it is possible to add param=TRUE to
+display the parameters of the distribution.}
 }
 \description{
 This function implements the generic summary functions for the
@@ -24,5 +22,4 @@ Through the summary() function  basic details are returned.
  paramter param=TRUE. Accordingly,  the summary function will also
  return the parameters of the distributions and the copula, both prior and
  after the transformation.
- \code{summary(x,param=TRUE)}
 }

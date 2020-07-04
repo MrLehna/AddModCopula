@@ -4,7 +4,7 @@
 \alias{plotting}
 \title{Assisting Plot function for class creg}
 \usage{
-plotting(x, option = "likelihood2D", ...)
+plotting(x, option, ...)
 }
 \arguments{
 \item{x}{creg object}
