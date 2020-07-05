@@ -2,7 +2,7 @@ Package: AddModCopula
 Type: Package
 Title: Optimization of bi-distributional copula through additive model
 Version: 0.1.0
-Depends: R (>= 3.5)
+Depends: R (>= 4.0)
 Author: Malte Lehna
 Maintainer: Malte Lehna <malte.lehna@live.de>
 Description: The aim of the package is to describe and optimize the parameters of 
@@ -11,10 +11,16 @@ License: GPL-2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Imports: distr,optimParallel,ggplot2,gridExtra,plotly,methods,stats
+Imports: distr (>= 2.8.0),
+            optimParallel,
+            ggplot2(>= 3.3.2),
+            gridExtra,
+            plotly(>= 4.9.2.1),
+            methods(>= 4.0.2),
+            stats(>= 4.0.2)
 Suggests: 
-    circular,
-    testthat (>= 2.1.0),
-    knitr,
-    rmarkdown
+    circular (>= 0.4-93),
+    testthat (>= 2.3.2),
+    knitr(>= 1.28),
+    rmarkdown 
 VignetteBuilder: knitr
